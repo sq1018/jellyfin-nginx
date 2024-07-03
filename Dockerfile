@@ -1,14 +1,17 @@
-# 使用最新的nginx基础镜像
 FROM nginx:latest
 
-# 复制配置文件到容器内
-COPY ./nginx-emby/nginx.conf /etc/nginx/nginx.conf
-COPY ./nginx-emby/conf.d /etc/nginx/conf.d
-COPY ./nginx-emby/embyCache /var/cache/nginx/emby
-COPY ./nginx-emby/log /var/log/nginx
+# 创建config目录并复制配置文件和数据目录到镜像中
+RUN mkdir -p /config
+COPY nginx.conf /config/nginx.conf
+COPY conf.d /config/conf.d
+COPY embyCache /config/embyCache
+COPY log /config/log
+
+# 设置工作目录为/config
+WORKDIR /config
 
 # 暴露端口
 EXPOSE 8091
 
-# 设置容器启动时运行的命令
+# 启动Nginx服务
 CMD ["nginx", "-g", "daemon off;"]
